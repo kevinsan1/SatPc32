@@ -1,10 +1,16 @@
-function [sport] = orbit_com(Az);
+function [sport] = orbit_com(Az,comPort);
+if nargin < 2
+   comPort = 'COM4'; 
+elseif nargin < 1
+   comPort = 'COM4';
+   Az = 0;
+end
 %clearvars;
 %clc;
 %delete(instrfind);
 % Specify the virtual serial port created by USB driver. Other serial port
 % parameters don't matter
-sport = serial('COM4');
+sport = serial(comPort);
 % sport = serial('/dev/tty.usbserial-PXHD6DXX');
 % Prologix Controller 4.2 requires CR as command terminator, LF is
 % optional. The controller terminates internal query responses with CR and

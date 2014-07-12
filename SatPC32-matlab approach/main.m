@@ -20,7 +20,7 @@ previousAzimuth = Az;
 %%% Establish communication only once %%%%
 comPortToArduino = 'COM15';
 [arduinoCom, flag] = arduinoDisplay(comPortToArduino);
-% sport = orbit_com(Az);
+sport = orbit_com(Az);
 %object = yaseu_com();
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
