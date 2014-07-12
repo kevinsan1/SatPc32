@@ -126,7 +126,9 @@ function startSatPC32_Callback(hObject, eventdata, handles)
 % hObject    handle to startSatPC32 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-[Az, El, Sat] = satpc32(handles.chan);
+try
+    [Az, El, Sat] = satpc32(handles.chan);
+end
 isStopButtonPushed = get(handles.stopSatPC32, 'Value');
 count = 1;
 while isStopButtonPushed ~= 1 || count == 1
