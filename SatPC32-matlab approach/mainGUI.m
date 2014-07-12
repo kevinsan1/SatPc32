@@ -52,6 +52,7 @@ function mainGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to mainGUI (see VARARGIN)
 % Choose default command line output for mainGUI
+delete(instrfind);
 handles.output = hObject;
 handles.comsAvailable = getAvailableComPort;
 % Update handles structure
@@ -72,7 +73,7 @@ function varargout = mainGUI_OutputFcn(hObject, eventdata, handles)
 handles.comsAvailable = getAvailableComPort;
 set(handles.arduinoPort, 'String', handles.comsAvailable);
 set(handles.azimuthPort, 'String', handles.comsAvailable);
-handles.chan = satpc32_com();
+% handles.chan = satpc32_com();
 varargout{1} = handles.output;
 
 
@@ -81,14 +82,36 @@ function connectToInstruments_Callback(hObject, eventdata, handles)
 % hObject    handle to connectToInstruments (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% [arduinoCom, flag] = arduinoDisplay(handles.portSelected);
 contents = cellstr(get(handles.arduinoPort,'String'));
-arduinoPort = contents{get(handles.arduinoPort,'Value')};
-azimuthPort = contents{get(handles.azimuthPort,'Value')};
-[handles.arduinoCom, flag] = arduinoDisplay(arduinoPort);
-handles.sport = orbit_com(Az, azimuthPort);
+arduinoPortName = contents{get(handles.arduinoPort,'Value')};
+azimuthPortName = contents{get(handles.azimuthPort,'Value')};
+[handles.arduinoCom, flag] = initializeArduino(arduinoPortName);
+[handles.azimuthCom, flag2] = initializeAzimuthRotor(azimuthPortName);
+switch (flag)
+    case 1
+        set(handles.coordinateDisplay, 'String',...
+            strvcat(get(handles.coordinateDisplay,'String'),...
+            'Connected to Arduino'));
+    case 2
+        set(handles.coordinateDisplay, 'String',...
+            strvcat(get(handles.coordinateDisplay,'String'),...
+            'Connected to Arduino'));
+end
+
+switch (flag2)
+    case 1
+        set(handles.coordinateDisplay, 'String',...
+            strvcat(get(handles.coordinateDisplay,'String'),...
+            'Connected to Azimuth'));
+    case 2
+        set(handles.coordinateDisplay, 'String',...
+            strvcat(get(handles.coordinateDisplay,'String'),...
+            'Not connected to Azimuth'));
+end
+
 % Update handles structure
 guidata(hObject, handles);
+
 % --- Executes on button press in stopSatPC32.
 function stopSatPC32_Callback(hObject, eventdata, handles)
 % hObject    handle to stopSatPC32 (see GCBO)
@@ -123,6 +146,7 @@ delete(instrfind);
 handles.comsAvailable = getAvailableComPort;
 set(handles.arduinoPort, 'String', handles.comsAvailable);
 set(handles.azimuthPort, 'String', handles.comsAvailable);
+set(handles.coordinateDisplay, 'String', '');
 
 % --- Executes on selection change in arduinoPort.
 function arduinoPort_Callback(hObject, eventdata, handles)
@@ -166,3 +190,4 @@ function azimuthPort_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+% set(hObject, 'String', '');
